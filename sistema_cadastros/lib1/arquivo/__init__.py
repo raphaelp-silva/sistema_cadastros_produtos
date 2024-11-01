@@ -1,4 +1,15 @@
+import mysql.connector
 from sistema_cadastros.lib1.interface import *
+import pandas as pd
+
+conexao = mysql.connector.connect(
+        host="localhost",  # ou o endereço IP do servidor MySQL
+        user="root",
+        password="raphael95",
+        database="sistema_cadastros"
+    )
+
+cursor = conexao.cursor()
 
 def arquivoExiste(nome): #funcao para verificar se o arquivo que armazenará os cadastros existe
     try:
@@ -70,7 +81,7 @@ def apagarProduto(arq,nome):
     else:
         print(f"O produto '{nome}' não foi encontrado na lista.")
 
-def exibirProdutos(nome):
+#def exibirProdutos(nome):
     try:
         a = open(nome, 'rt')
     except:
@@ -85,3 +96,19 @@ def exibirProdutos(nome):
             print(f"{dado[0]:<20} {dado[1].center(10)} R${valor_formatado:>8}")
     finally:
         a.close()
+def exibirProdutos():
+    try:
+        cursor.execute("SELECT * FROM produtos;")
+        resultado = cursor.fetchall()
+    except Exception as e:
+        print("Erro ao ler o arquivo:", e)
+    else:
+        cabecalho("PRODUTOS CADASTRADOS")
+        # Verifica se há produtos cadastrados
+        if resultado:
+            df = pd.DataFrame(resultado, columns=["Nome", "Série", "Preço"])
+            print(df.to_string(justify="left"))
+        else:
+            print("Nenhum produto cadastrado.")
+    finally:
+        cursor.close()

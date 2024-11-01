@@ -26,7 +26,7 @@ while True:
         apagarProduto(arq, nome) #TO-DO -> criar e finalizar a funcão
     elif resposta == 5:
         cabecalho("exibindo todos os produtos")
-        exibirProdutos(arq)
+        exibirProdutos()
     elif resposta == 6:
         cabecalho("Saindo do sistema...")
         break

@@ -11,18 +11,19 @@ def leiaInt(msg): #função para validar um número inteiro
             return n
 
 
-def linha(tam = 42):
+def linha(tam = 72):
     return '-' * tam
 
 
 def cabecalho(txt):
     print(linha())
-    print(txt.center(42)) #centralizando o texto do cabeçalho
+    print(txt.center(72)) #centralizando o texto do cabeçalho
     print(linha())
 
 
 def indice(nprod, nserie, preco):
-    print(f"{nprod:<20}{nserie.center(10)}{preco:>10}")
+    print(f"{nprod:<5}{nserie.center(60)}{preco:>1}")
+    
 
 
 def menu(lista): #criando a funcao que exibe o menu principal do sistema
