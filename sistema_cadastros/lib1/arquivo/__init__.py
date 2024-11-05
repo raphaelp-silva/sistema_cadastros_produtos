@@ -54,48 +54,26 @@ def cadastrar(arq, nome, nserie, valor):
 #def editarProduto():
 
 
-def apagarProduto(arq,nome):
-    a = nome
-    linha_a_apagar = None
-
+def apagarProduto(nome):
     try:
-        with open(arq, "r") as file:
-            linhas = file.readlines()
-    except Exception as exc:
-        print(f"Houve um erro na abertura do arquivo {exc}")
-        return
-    for numerolinha, linha in enumerate (linhas):
-        if a in linha:
-            linha_a_apagar = numerolinha
+        cursor.execute("SELECT COUNT(*) FROM produtos WHERE nome_produto = %s;", (nome,))
+        existe = cursor.fetchone()[0]
 
+        if existe == 0:
+            print(f"Produto '{nome}' não encontrado!")
+            return False
         
-    if linha_a_apagar is not None:
-        try:
-            with open(arq,"w") as file:
-                for numero, linha in enumerate(linhas):
-                    if numero != linha_a_apagar:
-                        file.write(linha)
-            print(f"O produto {nome} foi removido com sucesso!")
-        except Exception as exc:
-            print(f"Houve um erro ao tentar reescrever o arquivo: {exc}")
-    else:
-        print(f"O produto '{nome}' não foi encontrado na lista.")
+        cursor.execute("DELETE FROM produtos WHERE nome_produto = %s;", (nome,))
+   
+        conexao.commit()
 
-#def exibirProdutos(nome):
-    try:
-        a = open(nome, 'rt')
-    except:
-        print("Erro ao ler o arquivo!")
-    else:
-        cabecalho("PRODUTOS CADASTRADOS")
-        indice("Produto", " Serie", "  Valor\n")
-        for linha in a:
-            dado = linha.split(';')
-            dado[1] = dado[1].replace('\n','')
-            valor_formatado = f"{float(dado[2]):.2f}".replace('.', ',') #convertendo o valor para float para formatar com 2 casas decimais.
-            print(f"{dado[0]:<20} {dado[1].center(10)} R${valor_formatado:>8}")
-    finally:
-        a.close()
+        print(f"Produto '{nome}' excluído com sucesso!")
+        return True
+    except Exception as exc:
+        print(f"Houve um erro na exclusão do produto: {exc}")
+        return False
+
+
 def exibirProdutos():
     try:
         cursor.execute("SELECT * FROM produtos;")
@@ -107,8 +85,6 @@ def exibirProdutos():
         # Verifica se há produtos cadastrados
         if resultado:
             df = pd.DataFrame(resultado, columns=["Nome", "Série", "Preço"])
-            print(df.to_string(justify="left"))
+            print(df.to_string(justify="center"))
         else:
             print("Nenhum produto cadastrado.")
-    finally:
-        cursor.close()

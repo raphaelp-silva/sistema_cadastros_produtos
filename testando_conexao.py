@@ -15,9 +15,9 @@ try:
         
         # Executa uma consulta de teste para verificar a conexão
         cursor = conexao.cursor()
-        cursor.execute("SELECT DATABASE();")
-        banco = cursor.fetchone()
-        print("Banco de dados atual:", banco[0])
+        cursor.execute("USE sistema_cadastros;")
+        #revisar pq nao entra no banco 
+        cursor.execute("INSERT INTO produtos values ('teste','teste123','200')")
 
 except Error as e:
     print("Erro ao conectar ao MySQL:", e)

@@ -23,7 +23,7 @@ while True:
     elif resposta == 4:
         cabecalho("excluir produto")
         nome = str(input("Digite o nome do produto: "))
-        apagarProduto(arq, nome) #TO-DO -> criar e finalizar a funcão
+        apagarProduto(nome) #TO-DO -> criar e finalizar a funcão
     elif resposta == 5:
         cabecalho("exibindo todos os produtos")
         exibirProdutos()
