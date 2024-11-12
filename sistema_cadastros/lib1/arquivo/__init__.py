@@ -3,7 +3,7 @@ from sistema_cadastros.lib1.interface import *
 import pandas as pd
 
 conexao = mysql.connector.connect(
-        host="localhost",  # ou o endereço IP do servidor MySQL
+        host="localhost",  
         user="root",
         password="raphael95",
         database="sistema_cadastros"
@@ -11,47 +11,27 @@ conexao = mysql.connector.connect(
 
 cursor = conexao.cursor()
 
-def arquivoExiste(nome): #funcao para verificar se o arquivo que armazenará os cadastros existe
+def cadastrar(nome, nserie, valor):
     try:
-        a = open(nome, 'rt')
-        a.close()
-    except FileNotFoundError:
-        return False
-    else:
-        return True
+        cursor.execute(f"INSERT INTO produtos (nome_produto, num_serie, valor) VALUES ('{nome}', '{nserie}', {valor})")
+        conexao.commit()
+        print(f"O produto '{nome}' foi cadastrado com sucesso!")
+    except Exception as e:
+        print("Erro ao cadastrar o produto: ", e)
 
-
-def criarArquivo(nome): #funcao para criar o arquivo .txt caso ele nao exista 
+def consultarProduto(nome):
     try:
-        a = open(nome, 'wt+')
-        a.close()
-    except:
-        print("Houve um erro ao criar o arquivo txt")
+        cursor.execute(f"SELECT * FROM produtos WHERE nome_produto = '{nome}'")
+        resultado = cursor.fetchall()
+    except Exception as e:
+        print("Erro ao consultar o produto:", e)
     else:
-        print(f"Arquivo {nome} criado com sucesso")
-
-
-       
-def cadastrar(arq, nome, nserie, valor):
-    try:
-        a = open(arq, 'at')
-    except:
-        print("Erro na abertura do arquivo")
-    else:
-        try:
-            a.write(f"{nome};{nserie};{valor}\n")
-        except:
-            print("Houve um erro ao gravar os dados!")
+        cabecalho("PRODUTOS ENCONTRADOS")
+        if resultado:
+            df = pd.DataFrame(resultado, columns=["Nome", "Série", "Preço"])
+            print(df.to_string(justify="center"))
         else:
-            print(f"Novo registro de {nome} adicionado com sucesso!")
-        finally:
-            a.close()
-
-
-#def consultarProduto():
-
-
-#def editarProduto():
+            print("Nenhum produto encontrado.")
 
 
 def apagarProduto(nome):
